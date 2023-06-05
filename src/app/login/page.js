@@ -1,6 +1,24 @@
-
-
+"use client"
+import {useState} from "react";
+import emailIcon from 'public/assets/images/email.svg';
+import passwordIcon from 'public/assets/images/password.svg';
+import Image from 'next/image';
+import axisoInstance from "@/utils/axisoInstance";
 const Login = () => {
+    const [email,setEmail] = useState('');
+    const [password,setPassword] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        axisoInstance.post('/api/login',{email: email, password: password})
+            .then(res => {
+                console.log(res)
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    }
+
     return (
 
         <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
@@ -12,30 +30,54 @@ const Login = () => {
 
                                 <div className="card-body">
                                     <h1>Login</h1>
-
-                                    <p className="text-medium-emphasis">Sign In to your account</p>
+                                    <form onSubmit={handleSubmit}>
+                                    <p className="text-medium-emphasis">Sign In to your account </p>
                                     <div className="input-group mb-3">
                                         <span className="input-group-text">
-
+                                             <Image
+                                                 src={emailIcon}
+                                                 width={28}
+                                                 height={28}
+                                                 alt="Picture of the author"
+                                             />
                                         </span>
-                                        <input className="form-control" type="text" placeholder="Username"/>
+                                        <input
+                                            name="email"
+                                            className="form-control"
+                                            type="text"
+                                            placeholder="Email"
+                                            value={email}
+                                            onChange={e => setEmail(e.target.value)}
+                                        />
                                     </div>
                                     <div className="input-group mb-4">
                                         <span className="input-group-text">
-
+                                          <Image
+                                              src={passwordIcon}
+                                              width={28}
+                                              height={28}
+                                              alt="Picture of the author"
+                                          />
                                     </span>
-                                        <input className="form-control" type="password" placeholder="Password"/>
+                                        <input
+                                            className="form-control"
+                                            type="password"
+                                            placeholder="Password"
+                                            name="password"
+                                            value={password}
+                                            onChange={e => setPassword(e.target.value)}
+                                        />
                                     </div>
                                     <div className="row">
                                         <div className="col-6">
-                                            <button className="btn btn-primary px-4" type="button">Login</button>
+                                            <button disabled={true} className="btn btn-primary px-4" type="submit">Login</button>
                                         </div>
                                         <div className="col-6 text-end">
-                                            <button className="btn btn-link px-0" type="button">Forgot password?
+                                            <button  className="btn btn-link px-0" type="button">Forgot password?
                                             </button>
                                         </div>
                                     </div>
-
+                                    </form>
                                 </div>
 
 
