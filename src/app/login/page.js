@@ -7,16 +7,30 @@ import axisoInstance from "@/utils/axisoInstance";
 const Login = () => {
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
-
-    const handleSubmit = (e) => {
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage ] = useState(undefined);
+    const [validationErrors, setValidationErrors] = useState(undefined);
+    const  handleSubmit = async (e) => {
         e.preventDefault();
-        axisoInstance.post('/api/login',{email: email, password: password})
-            .then(res => {
-                console.log(res)
-            })
-            .catch(e => {
-                console.log(e)
-            })
+        try{
+            const result = await axisoInstance.post('/api/login',{email: email, password: password})
+            console.log('result', result);
+        }catch (e){
+            if(e?.response?.data?.errors){
+                setValidationErrors(e.response.data.errors)
+            }
+            if(e?.response?.data?.message){
+                setErrorMessage(e.response.data.message)
+            }
+        }
+
+    }
+
+    const isError = (field) => {
+        if(validationErrors && validationErrors[field]){
+            return {status: true, message: validationErrors[field]}
+        }
+        return {status: false, message: ''};
     }
 
     return (
@@ -30,6 +44,12 @@ const Login = () => {
 
                                 <div className="card-body">
                                     <h1>Login</h1>
+                                    {JSON.stringify(errorMessage)}
+                                    {JSON.stringify(validationErrors)}
+
+                                    <div className="alert alert-danger show" role="alert"> A simple danger alert—check
+                                        it out!
+                                    </div>
                                     <form onSubmit={handleSubmit}>
                                     <p className="text-medium-emphasis">Sign In to your account </p>
                                     <div className="input-group mb-3">
@@ -43,12 +63,14 @@ const Login = () => {
                                         </span>
                                         <input
                                             name="email"
-                                            className="form-control"
+                                            className={`form-control ${isError('email').status ? 'is-invalid' : ''}`}
                                             type="text"
                                             placeholder="Email"
                                             value={email}
                                             onChange={e => setEmail(e.target.value)}
                                         />
+                                        {isError('email').status ?
+                                        <div className="invalid-feedback">{isError('email').message}</div> : ''}
                                     </div>
                                     <div className="input-group mb-4">
                                         <span className="input-group-text">
@@ -70,7 +92,7 @@ const Login = () => {
                                     </div>
                                     <div className="row">
                                         <div className="col-6">
-                                            <button disabled={true} className="btn btn-primary px-4" type="submit">Login</button>
+                                            <button disabled={loading} className="btn btn-primary px-4" type="submit">Login</button>
                                         </div>
                                         <div className="col-6 text-end">
                                             <button  className="btn btn-link px-0" type="button">Forgot password?
