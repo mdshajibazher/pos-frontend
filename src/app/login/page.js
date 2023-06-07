@@ -8,12 +8,21 @@ const Login = () => {
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [successMessage, setSuccessMessage ] = useState(undefined);
     const [errorMessage, setErrorMessage ] = useState(undefined);
     const [validationErrors, setValidationErrors] = useState(undefined);
+
+    const resetForm = () => {
+        setErrorMessage(undefined)
+        setSuccessMessage(undefined)
+        setValidationErrors(undefined)
+    }
     const  handleSubmit = async (e) => {
         e.preventDefault();
+        resetForm();
         try{
             const result = await axisoInstance.post('/api/login',{email: email, password: password})
+            setSuccessMessage(JSON.stringify(result.data))
             console.log('result', result);
         }catch (e){
             if(e?.response?.data?.errors){
@@ -44,12 +53,13 @@ const Login = () => {
 
                                 <div className="card-body">
                                     <h1>Login</h1>
-                                    {JSON.stringify(errorMessage)}
-                                    {JSON.stringify(validationErrors)}
+                                    {successMessage &&
+                                        <div className="alert alert-success show" role="alert"> Login Successful...
+                                        </div> }
 
-                                    <div className="alert alert-danger show" role="alert"> A simple danger alert—check
-                                        it out!
-                                    </div>
+                                    {errorMessage &&
+                                    <div className="alert alert-danger show" role="alert"> {errorMessage}
+                                    </div> }
                                     <form onSubmit={handleSubmit}>
                                     <p className="text-medium-emphasis">Sign In to your account </p>
                                     <div className="input-group mb-3">
@@ -82,13 +92,15 @@ const Login = () => {
                                           />
                                     </span>
                                         <input
-                                            className="form-control"
+                                            className={`form-control ${isError('password').status ? 'is-invalid' : ''}`}
                                             type="password"
                                             placeholder="Password"
                                             name="password"
                                             value={password}
                                             onChange={e => setPassword(e.target.value)}
                                         />
+                                        {isError('email').status ?
+                                            <div className="invalid-feedback">{isError('password').message}</div> : ''}
                                     </div>
                                     <div className="row">
                                         <div className="col-6">
