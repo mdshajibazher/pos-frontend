@@ -19,7 +19,7 @@ export default function RootLayout({ children, session }) {
     <html lang="en">
       <body className={inter.className}>
       <SessionProvider session={session}>
-          <AppBar/>
+          {/*<AppBar/>*/}
         {children}
       </SessionProvider>
 

@@ -3,44 +3,32 @@ import {useState} from "react";
 import emailIcon from 'public/assets/images/email.svg';
 import passwordIcon from 'public/assets/images/password.svg';
 import Image from 'next/image';
-import axisoInstance from "@/utils/axisoInstance";
+
+import {signIn,getCsrfToken} from "next-auth/react";
+import {useSearchParams} from "next/navigation";
 const Login = () => {
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get('callbackUrl') || '/';
+    const error = searchParams.get('error') ? 'Invalid Credential' : '';
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [successMessage, setSuccessMessage ] = useState(undefined);
-    const [errorMessage, setErrorMessage ] = useState(undefined);
-    const [validationErrors, setValidationErrors] = useState(undefined);
 
-    const resetForm = () => {
-        setErrorMessage(undefined)
-        setSuccessMessage(undefined)
-        setValidationErrors(undefined)
-    }
-    const  handleSubmit = async (e) => {
+    const   handleSubmit = async (e) => {
         e.preventDefault();
-        resetForm();
         try{
-            const result = await axisoInstance.post('/api/login',{email: email, password: password})
-            setSuccessMessage(JSON.stringify(result.data))
-            console.log('result', result);
+            const result = await signIn("credentials",{
+                email,
+                password,
+                redirect: true,
+                callbackUrl: callbackUrl
+            })
+            return result
         }catch (e){
-            if(e?.response?.data?.errors){
-                setValidationErrors(e.response.data.errors)
-            }
-            if(e?.response?.data?.message){
-                setErrorMessage(e.response.data.message)
-            }
+            console.log('e',e);
         }
 
     }
 
-    const isError = (field) => {
-        if(validationErrors && validationErrors[field]){
-            return {status: true, message: validationErrors[field]}
-        }
-        return {status: false, message: ''};
-    }
 
     return (
 
@@ -52,17 +40,15 @@ const Login = () => {
                             <div className="card col-md-7 p-4 mb-0">
 
                                 <div className="card-body">
-                                    <h1>Login</h1>
-                                    {successMessage &&
-                                        <div className="alert alert-success show" role="alert"> Login Successful...
-                                        </div> }
+                                    <h1>Login  </h1>
 
-                                    {errorMessage &&
-                                    <div className="alert alert-danger show" role="alert"> {errorMessage}
-                                    </div> }
+                                    {error &&
+                                        <div className="alert alert-danger show" role="alert"> {error}
+                                        </div> }
                                     <form onSubmit={handleSubmit}>
-                                    <p className="text-medium-emphasis">Sign In to your account </p>
-                                    <div className="input-group mb-3">
+                                        <p className="text-medium-emphasis">Sign In to your account </p>
+                                        <div className="input-group mb-3">
+
                                         <span className="input-group-text">
                                              <Image
                                                  src={emailIcon}
@@ -71,18 +57,17 @@ const Login = () => {
                                                  alt="Picture of the author"
                                              />
                                         </span>
-                                        <input
-                                            name="email"
-                                            className={`form-control ${isError('email').status ? 'is-invalid' : ''}`}
-                                            type="text"
-                                            placeholder="Email"
-                                            value={email}
-                                            onChange={e => setEmail(e.target.value)}
-                                        />
-                                        {isError('email').status ?
-                                        <div className="invalid-feedback">{isError('email').message}</div> : ''}
-                                    </div>
-                                    <div className="input-group mb-4">
+                                            <input name="csrfToken" type="hidden" value={getCsrfToken()}/>
+                                            <input
+                                                name="email"
+                                                type="text"
+                                                placeholder="Email"
+                                                value={email}
+                                                onChange={e => setEmail(e.target.value)}
+                                            />
+
+                                        </div>
+                                        <div className="input-group mb-4">
                                         <span className="input-group-text">
                                           <Image
                                               src={passwordIcon}
@@ -91,26 +76,24 @@ const Login = () => {
                                               alt="Picture of the author"
                                           />
                                     </span>
-                                        <input
-                                            className={`form-control ${isError('password').status ? 'is-invalid' : ''}`}
-                                            type="password"
-                                            placeholder="Password"
-                                            name="password"
-                                            value={password}
-                                            onChange={e => setPassword(e.target.value)}
-                                        />
-                                        {isError('email').status ?
-                                            <div className="invalid-feedback">{isError('password').message}</div> : ''}
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-6">
-                                            <button disabled={loading} className="btn btn-primary px-4" type="submit">Login</button>
+                                            <input
+                                                type="password"
+                                                placeholder="Password"
+                                                name="password"
+                                                value={password}
+                                                onChange={e => setPassword(e.target.value)}
+                                            />
+
                                         </div>
-                                        <div className="col-6 text-end">
-                                            <button  className="btn btn-link px-0" type="button">Forgot password?
-                                            </button>
+                                        <div className="row">
+                                            <div className="col-6">
+                                                <button  className="btn btn-primary px-4">Login</button>
+                                            </div>
+                                            <div className="col-6 text-end">
+                                                <button  className="btn btn-link px-0" type="button">Forgot password?
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
                                     </form>
                                 </div>
 
@@ -134,8 +117,15 @@ const Login = () => {
                 </div>
             </div>
 
-                </div>
+        </div>
 
-            )
+    )
+
+}
+
+signIn.getInitialProps = async (context) => {
+    return {
+        csrfToken: await getCsrfToken()
+    }
 }
 export default Login
