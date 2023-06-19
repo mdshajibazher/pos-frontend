@@ -60,6 +60,7 @@ const Login = () => {
                                             <input name="csrfToken" type="hidden" value={getCsrfToken()}/>
                                             <input
                                                 name="email"
+                                                className="form-control"
                                                 type="text"
                                                 placeholder="Email"
                                                 value={email}
@@ -78,6 +79,7 @@ const Login = () => {
                                     </span>
                                             <input
                                                 type="password"
+                                                className="form-control"
                                                 placeholder="Password"
                                                 name="password"
                                                 value={password}
