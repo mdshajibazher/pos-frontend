@@ -8,13 +8,14 @@ import {signIn,getCsrfToken} from "next-auth/react";
 import {useSearchParams} from "next/navigation";
 const Login = () => {
     const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get('callbackUrl') || '/';
+    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
     const error = searchParams.get('error') ? 'Invalid Credential' : '';
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
 
     const   handleSubmit = async (e) => {
         e.preventDefault();
+
         try{
             const result = await signIn("credentials",{
                 email,
