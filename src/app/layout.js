@@ -1,11 +1,6 @@
-'use client';
-
-import '@/css/style.css';
-import { Inter } from 'next/font/google'
+"use client"
 import {SessionProvider} from "next-auth/react";
-import AppBar from "@/app/AppBar";
-
-const inter = Inter({ subsets: ['latin'] })
+import {Providers} from "./providers";
 
 // export const metadata = {
 //   title: 'Create Next App',
@@ -13,17 +8,16 @@ const inter = Inter({ subsets: ['latin'] })
 // }
 
 
-
 export default function RootLayout({ children, session }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
       <SessionProvider session={session}>
+          <Providers>
           {/*<AppBar/>*/}
         {children}
+          </Providers>
       </SessionProvider>
-
-
       </body>
     </html>
   )

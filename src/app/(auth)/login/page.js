@@ -3,6 +3,7 @@ import {useState} from "react";
 import emailIcon from 'public/assets/images/email.svg';
 import passwordIcon from 'public/assets/images/password.svg';
 import Image from 'next/image';
+import {Button} from '@nextui-org/button';
 
 import {signIn,getCsrfToken} from "next-auth/react";
 import {useSearchParams} from "next/navigation";
@@ -42,7 +43,7 @@ const Login = () => {
 
                                 <div className="card-body">
                                     <h1>Login  </h1>
-
+                                    <Button>Click Me</Button>
                                     {error &&
                                         <div className="alert alert-danger show" role="alert"> {error}
                                         </div> }
