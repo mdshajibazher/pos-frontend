@@ -1,135 +1,113 @@
 "use client"
-import {useState} from "react";
-import emailIcon from 'public/assets/images/email.svg';
-import passwordIcon from 'public/assets/images/password.svg';
-import Image from 'next/image';
-import {Button} from '@nextui-org/button';
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import {signIn,getCsrfToken} from "next-auth/react";
-import {useSearchParams} from "next/navigation";
-const Login = () => {
-    const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
-    const error = searchParams.get('error') ? 'Invalid Credential' : '';
-    const [email,setEmail] = useState('');
-    const [password,setPassword] = useState('');
+function Copyright(props) {
+    return (
+        <Typography variant="body2" color="text.secondary" align="center" {...props}>
+            {'Copyright © '}
+            <Link color="inherit" href="https://mui.com/">
+                Your Website
+            </Link>{' '}
+            {new Date().getFullYear()}
+            {'.'}
+        </Typography>
+    );
+}
 
-    const   handleSubmit = async (e) => {
-        e.preventDefault();
+// TODO remove, this demo shouldn't need to reset the theme.
 
-        try{
-            const result = await signIn("credentials",{
-                email,
-                password,
-                redirect: true,
-                callbackUrl: callbackUrl
-            })
-            return result
-        }catch (e){
-            console.log('e',e);
-        }
+const defaultTheme = createTheme();
 
-    }
-
+export default function SignIn() {
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        console.log({
+            email: data.get('email'),
+            password: data.get('password'),
+        });
+    };
 
     return (
-
-        <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
-            <div className="container">
-                <div className="row justify-content-center">
-                    <div className="col-lg-8">
-                        <div className="card-group d-block d-md-flex row">
-                            <div className="card col-md-7 p-4 mb-0">
-
-                                <div className="card-body">
-                                    <h1>Login  </h1>
-                                    <Button>Click Me</Button>
-                                    {error &&
-                                        <div className="alert alert-danger show" role="alert"> {error}
-                                        </div> }
-                                    <form onSubmit={handleSubmit}>
-                                        <p className="text-medium-emphasis">Sign In to your account </p>
-                                        <div className="input-group mb-3">
-
-                                        <span className="input-group-text">
-                                             <Image
-                                                 src={emailIcon}
-                                                 width={28}
-                                                 height={28}
-                                                 alt="Picture of the author"
-                                             />
-                                        </span>
-                                            <input name="csrfToken" type="hidden" value={getCsrfToken()}/>
-                                            <input
-                                                name="email"
-                                                className="form-control"
-                                                type="text"
-                                                placeholder="Email"
-                                                value={email}
-                                                onChange={e => setEmail(e.target.value)}
-                                            />
-
-                                        </div>
-                                        <div className="input-group mb-4">
-                                        <span className="input-group-text">
-                                          <Image
-                                              src={passwordIcon}
-                                              width={28}
-                                              height={28}
-                                              alt="Picture of the author"
-                                          />
-                                    </span>
-                                            <input
-                                                type="password"
-                                                className="form-control"
-                                                placeholder="Password"
-                                                name="password"
-                                                value={password}
-                                                onChange={e => setPassword(e.target.value)}
-                                            />
-
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-6">
-                                                <button  className="btn btn-primary px-4">Login</button>
-                                            </div>
-                                            <div className="col-6 text-end">
-                                                <button  className="btn btn-link px-0" type="button">Forgot password?
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-
-
-                            </div>
-                            <div className="card col-md-5 text-white bg-primary py-5">
-                                <div className="card-body text-center">
-                                    <div>
-                                        <h2>Sign up</h2>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua.</p>
-                                        <button className="btn btn-lg btn-outline-light mt-3" type="button">Register
-                                            Now!
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    )
-
+        <ThemeProvider theme={defaultTheme}>
+            <Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <Box
+                    sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                        <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
+                        Sign in
+                    </Typography>
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            autoFocus
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                        />
+                        <FormControlLabel
+                            control={<Checkbox value="remember" color="primary" />}
+                            label="Remember me"
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                        >
+                            Sign In
+                        </Button>
+                        <Grid container>
+                            <Grid item xs>
+                                <Link href="#" variant="body2">
+                                    Forgot password?
+                                </Link>
+                            </Grid>
+                            <Grid item>
+                                <Link href="#" variant="body2">
+                                    {"Don't have an account? Sign Up"}
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Box>
+                <Copyright sx={{ mt: 8, mb: 4 }} />
+            </Container>
+        </ThemeProvider>
+    );
 }
-
-signIn.getInitialProps = async (context) => {
-    return {
-        csrfToken: await getCsrfToken()
-    }
-}
-export default Login

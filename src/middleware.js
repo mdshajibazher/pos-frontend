@@ -4,6 +4,7 @@ export default async function middleware(req,res){
     if(req.nextUrl.pathname.startsWith('/dashboard')){
         const session = !!req.cookies.get('next-auth.session-token');
         if(!session){
+            return NextResponse.next();
             return NextResponse.redirect(new URL('/login',req.url))
         }else{
             return NextResponse.next();

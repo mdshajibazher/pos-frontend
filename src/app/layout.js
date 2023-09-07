@@ -1,6 +1,6 @@
 "use client"
 import {SessionProvider} from "next-auth/react";
-import {Providers} from "./providers";
+
 
 // export const metadata = {
 //   title: 'Create Next App',
@@ -13,10 +13,9 @@ export default function RootLayout({ children, session }) {
     <html lang="en">
       <body>
       <SessionProvider session={session}>
-          <Providers>
+
           {/*<AppBar/>*/}
         {children}
-          </Providers>
       </SessionProvider>
       </body>
     </html>
