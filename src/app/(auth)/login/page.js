@@ -13,7 +13,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import {signIn,getCsrfToken} from "next-auth/react";
+import {Snackbar} from "@mui/material";
+import {useState} from "react";
 function Copyright(props) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -31,15 +33,44 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignIn() {
-    const handleSubmit = (event) => {
+
+export default  function Login() {
+
+    const [open, setOpen] = useState(false);
+
+
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+
+            let email =  data.get('email');
+            let password = data.get('password');
+
+        try{
+            const result = await signIn("credentials",{
+                email,
+                password,
+                redirect: true,
+                callbackUrl: callbackUrl
+            })
+            return result
+        }catch (e){
+            setOpen(true);
+            console.log('e',e);
+        }
     };
+
+    const handleClose = (  event) => {
+        console.log(event);
+        return;
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
+
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -106,7 +137,14 @@ export default function SignIn() {
                         </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
+                {/*<Copyright sx={{ mt: 8, mb: 4 }} />*/}
+                <Snackbar
+                    open={open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                    message="Note archived"
+
+                />
             </Container>
         </ThemeProvider>
     );
