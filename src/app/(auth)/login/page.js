@@ -14,8 +14,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {signIn,getCsrfToken} from "next-auth/react";
-import {Snackbar} from "@mui/material";
+import {Alert, AlertTitle, Snackbar} from "@mui/material";
 import {useState} from "react";
+import {useSearchParams} from "next/navigation";
+import LoadingButton from '@mui/lab/LoadingButton';
 function Copyright(props) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -34,19 +36,21 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 
+
 export default  function Login() {
 
     const [open, setOpen] = useState(false);
-
-
-
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+    const error = searchParams.get('error') ? 'Invalid Credential' : '';
+    const [loading,setLoading] = useState(false);
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-            let email =  data.get('email');
-            let password = data.get('password');
-
+        let email =  data.get('email');
+        let password = data.get('password');
+        setLoading(true)
         try{
             const result = await signIn("credentials",{
                 email,
@@ -59,6 +63,7 @@ export default  function Login() {
             setOpen(true);
             console.log('e',e);
         }
+        setLoading(false)
     };
 
     const handleClose = (  event) => {
@@ -90,8 +95,17 @@ export default  function Login() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
+                    {!!error &&
+                    <Alert sx={{ marginTop: '20px' }} severity="error">
+
+                        {error}
+                    </Alert> }
+
+
+
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
+                            error={!!error}
                             margin="normal"
                             required
                             fullWidth
@@ -102,6 +116,7 @@ export default  function Login() {
                             autoFocus
                         />
                         <TextField
+                            error={!!error}
                             margin="normal"
                             required
                             fullWidth
@@ -115,13 +130,22 @@ export default  function Login() {
                             control={<Checkbox value="remember" color="primary" />}
                             label="Remember me"
                         />
+
+{/*                        <LoadingButton loading variant="outlined"  sx={{ mt: 3, mb: 2 }}>
+                            fullWidth
+                            Submit
+
+
+                        </LoadingButton>*/}
                         <Button
+                            loading={true}
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
+                            disabled={loading}
                         >
-                            Sign In
+                            {loading ? 'Please Wait...' : 'Sign In'}
                         </Button>
                         <Grid container>
                             <Grid item xs>

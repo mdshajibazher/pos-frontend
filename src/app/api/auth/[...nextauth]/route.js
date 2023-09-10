@@ -25,10 +25,9 @@ const handler = NextAuth({
                     })
                 })
 
-                const user = await res.json();
-                if(res.ok && user){
-                    console.log('user', user);
-                    return user;
+                let responseJSON = await res.json();
+                if(res.ok && responseJSON?.user){
+                    return responseJSON.user;
                 }else{
                     return null;
                 }
