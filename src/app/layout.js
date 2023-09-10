@@ -1,11 +1,9 @@
-"use client"
-import {SessionProvider} from "next-auth/react";
 import * as React from "react";
 import Box from '@mui/material/Box';
 import TopBar from "@/components/TopBar";
 import LeftSidebar from "@/components/LeftSidebar";
 import ThemeRegistry from "@/theme/Themeregistry";
-
+import NextAuthSessionProvider from "@/app/providers/sessionProvider";
 
 
 export const metadata = {
@@ -16,17 +14,17 @@ export const metadata = {
 export default function RootLayout({ children, session }) {
   return (
     <html lang="en">
-    <SessionProvider session={session}>
-      <ThemeRegistry>
+      <ThemeRegistry session={session}>
       <body>
+      <NextAuthSessionProvider>
           <Box sx={{ display: 'flex' }}>
               <TopBar/>
               <LeftSidebar/>
               {children}
           </Box>
+      </NextAuthSessionProvider>
       </body>
       </ThemeRegistry>
-    </SessionProvider>
     </html>
   )
 }

@@ -1,7 +1,6 @@
 "use client"
 
 import Box from '@mui/material/Box';
-import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -31,11 +30,7 @@ function Copyright(props) {
 
 
 export default function Dashboard() {
-
-
-
     return (
-
                 <Box
                     component="main"
                     sx={{

@@ -5,7 +5,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeOptions, ThemeProvider } from "@mui/material/styles";
 import { Roboto } from "next/font/google";
 // import { NextAppDirEmotionCacheProvider } from "./EmotionCache"
-
 const roboto = Roboto({
     weight: ["300", "400", "500", "700"],
     style: ["normal", "italic"],
@@ -20,7 +19,7 @@ const themeOptions = {
     palette: {
         background: {
             // pink
-            default: "#f8bbd0",
+            default: "#FFFFFF",
         },
         primary: {
             main: "#1976d2",
@@ -33,15 +32,11 @@ const themeOptions = {
 
 const theme = createTheme(themeOptions);
 
-export default function ThemeRegistry({
-                                          children,
-                                      }) {
+export default function ThemeRegistry({children}) {
     return (
-        // <NextAppDirEmotionCacheProvider options={{ key: "mui" }}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 {children}
             </ThemeProvider>
-        // </NextAppDirEmotionCacheProvider>
     );
 }

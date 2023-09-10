@@ -31,11 +31,6 @@ function Copyright(props) {
     );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
-const defaultTheme = createTheme();
-
-
 
 export default  function Login() {
 
@@ -78,7 +73,6 @@ export default  function Login() {
 
 
     return (
-        <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -131,21 +125,16 @@ export default  function Login() {
                             label="Remember me"
                         />
 
-{/*                        <LoadingButton loading variant="outlined"  sx={{ mt: 3, mb: 2 }}>
-                            fullWidth
-                            Submit
 
-
-                        </LoadingButton>*/}
                         <Button
                             loading={true}
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            disabled={loading}
+                            disabled={!!loading}
                         >
-                            {loading ? 'Please Wait...' : 'Sign In'}
+                            {!!loading ? 'Please Wait...' : 'Sign In'}
                         </Button>
                         <Grid container>
                             <Grid item xs>
@@ -167,9 +156,8 @@ export default  function Login() {
                     autoHideDuration={6000}
                     onClose={handleClose}
                     message="Note archived"
-
                 />
             </Container>
-        </ThemeProvider>
+
     );
 }
