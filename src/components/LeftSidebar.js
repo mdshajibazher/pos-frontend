@@ -8,6 +8,7 @@ import {mainListItems, secondaryListItems} from "@/components/ListItems";
 import * as React from "react";
 import {styled} from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
+import {useGlobalContext} from "@/theme/contexts/global-context";
 
 const drawerWidth = 240;
 
@@ -39,12 +40,12 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 
 export default function LeftSidebar(){
-    const [open, setOpen] = React.useState(true);
+    const {sideNavOpen, setSideNavOpen} = useGlobalContext();
     const toggleDrawer = () => {
-        setOpen(!open);
+        setSideNavOpen(!sideNavOpen);
     };
     return (
-        <Drawer variant="permanent" open={open}>
+        <Drawer variant="permanent" open={sideNavOpen}>
             <Toolbar
                 sx={{
                     display: 'flex',

@@ -27,7 +27,7 @@ const handler = NextAuth({
 
                 let responseJSON = await res.json();
                 if(res.ok && responseJSON?.user){
-                    return responseJSON.user;
+                    return {...responseJSON.user ,apiToken : responseJSON.token};
                 }else{
                     return null;
                 }

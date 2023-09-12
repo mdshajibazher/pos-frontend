@@ -8,6 +8,8 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import * as React from "react";
 import {styled} from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
+import {useContext, useState} from "react";
+import {GlobalContext, useGlobalContext} from "@/theme/contexts/global-context";
 
 const drawerWidth = 240;
 const AppBar = styled(MuiAppBar, {
@@ -30,12 +32,12 @@ const AppBar = styled(MuiAppBar, {
 
 
 export default function TopBar() {
-    const [open, setOpen] = React.useState(false);
+    const {sideNavOpen, setSideNavOpen} = useGlobalContext();
     const toggleDrawer = () => {
-        setOpen(!open);
+        setSideNavOpen(!sideNavOpen);
     };
     return (
-        <AppBar position="absolute" open={open}>
+        <AppBar position="absolute" open={sideNavOpen}>
             <Toolbar
                 sx={{
                     pr: '24px', // keep right padding when drawer closed
@@ -48,7 +50,7 @@ export default function TopBar() {
                     onClick={toggleDrawer}
                     sx={{
                         marginRight: '36px',
-                        ...(open && { display: 'none' }),
+                        ...(sideNavOpen && { display: 'none' }),
                     }}
                 >
                     <MenuIcon />
