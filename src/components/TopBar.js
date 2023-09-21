@@ -10,6 +10,7 @@ import {styled} from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
 import {useContext, useState} from "react";
 import {GlobalContext, useGlobalContext} from "@/theme/contexts/global-context";
+import { useSession } from "next-auth/react"
 
 const drawerWidth = 240;
 const AppBar = styled(MuiAppBar, {
@@ -32,6 +33,8 @@ const AppBar = styled(MuiAppBar, {
 
 
 export default function TopBar() {
+    const { data: session } = useSession()
+
     const {sideNavOpen, setSideNavOpen} = useGlobalContext();
     const toggleDrawer = () => {
         setSideNavOpen(!sideNavOpen);
@@ -64,6 +67,7 @@ export default function TopBar() {
                 >
                     Dashboard
                 </Typography>
+                {JSON.stringify(session)}
                 <IconButton color="inherit">
                     <Badge badgeContent={4} color="secondary">
                         <NotificationsIcon />
