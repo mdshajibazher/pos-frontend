@@ -5,12 +5,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import LoginIcon from '@mui/icons-material/Login';
 import * as React from "react";
 import {styled} from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
-import {useContext, useState} from "react";
-import {GlobalContext, useGlobalContext} from "@/theme/contexts/global-context";
-import { useSession } from "next-auth/react"
+import { useGlobalContext} from "@/theme/contexts/global-context";
+import { useSession,signIn,signOut } from "next-auth/react"
 
 const drawerWidth = 240;
 const AppBar = styled(MuiAppBar, {
@@ -58,6 +59,7 @@ export default function TopBar() {
                 >
                     <MenuIcon />
                 </IconButton>
+
                 <Typography
                     component="h1"
                     variant="h6"
@@ -67,7 +69,25 @@ export default function TopBar() {
                 >
                     Dashboard
                 </Typography>
-                {JSON.stringify(session)}
+
+                {!!session?.user &&
+                    <IconButton color="inherit" onClick={signOut}>
+                        {session?.user?.name}
+                    </IconButton>
+                }
+
+                {!(!!session?.user) &&
+                <IconButton color="inherit" onClick={signIn}>
+                    <Badge badgeContent={'Login'} color="info">
+                    <LoginIcon/>
+                    </Badge>
+                </IconButton>
+                }
+                {!!session?.user &&
+                <IconButton color="inherit" onClick={signOut}>
+                    <PowerSettingsNewIcon/>
+                </IconButton>
+                }
                 <IconButton color="inherit">
                     <Badge badgeContent={4} color="secondary">
                         <NotificationsIcon />
